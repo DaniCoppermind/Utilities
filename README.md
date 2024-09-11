@@ -1,0 +1,1 @@
+Cositas que consigo por internet y que me pueden servir en un futuro.
