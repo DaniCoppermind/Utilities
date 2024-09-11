@@ -59,3 +59,11 @@ input {
     outline: 2px solid #09f;
   }
 }
+
+.selected {
+  background: rgb(174, 233, 255);
+}
+
+th.selected {
+  background: rgb(146, 211, 255);
+}
