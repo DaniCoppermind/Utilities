@@ -3,28 +3,27 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="styles.css" />
     <title>ChatGPT Local</title>
     <script type="module" src="script.js"></script>
   </head>
+  <body>
     <main>
       <ul>
-        <li class="message bot">
-          <span>GPT</span>
-          <p>Respuesta del bot</p>
-        </li>
-
-        <li class="message user">
-          <span>Tú</span>
-          <p>Respuesta del User</p>
+        <li class="loading">
+          <i></i>
+          <h4>Cargando...</h4>
+          <h5>Esto puede tardar un poco. Paciencia.</h5>
         </li>
       </ul>
     </main>
 
     <form>
-      <input placeholder="Escribe tu mensaje aquí...">
-      <button>Enviar</button>
+      <input placeholder="Escribe tu mensaje aquí..." />
+      <button disabled>Enviar</button>
     </form>
+
+    <small>&nbsp;</small>
 
     <template id="message-template">
       <li class="message">
