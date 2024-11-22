@@ -35,7 +35,7 @@ input {
   top: 0;
   left: 0;
   pointer-events: none;
-  /* opacity: 0; */
+  opacity: 0;
 }
 
 p {
@@ -71,6 +71,15 @@ letter {
   }
 }
 
+word {
+  border-bottom: 1.5px solid transparent;
+  transition: border-color 0.3s ease-in-out;
+
+  &.marked {
+    border-color: var(--red);
+  }
+}
+
 @keyframes blink {
   0%,
   25% {
@@ -78,5 +87,45 @@ letter {
   }
   75% {
     opacity: 0;
+  }
+}
+
+#game {
+  display: flex;
+}
+
+#results {
+  display: none;
+}
+
+h2 {
+  font-weight: 400;
+  opacity: 0.4;
+  margin: 0;
+  font-size: 16px;
+}
+
+h3 {
+  font-weight: 400;
+  margin: 0;
+  font-size: 24px;
+  color: var(--yellow);
+}
+
+button {
+  background: transparent;
+  border: 0;
+  margin-top: 32px;
+  padding: 8px;
+  opacity: 0.4;
+  display: inline-block;
+  transition: opacity 0.3s ease-in, transform 0.3s ease-in-out;
+  cursor: pointer;
+  border-radius: 16px;
+
+  &:hover {
+    background: #444;
+    opacity: 1;
+    scale: 110%;
   }
 }

@@ -1,23 +1,32 @@
+import { words as INITIAL_WORDS } from './data.js';
+
 const $ = (el) => document.querySelector(el);
 
 const $time = $('time');
 const $paragraph = $('p');
 const $input = $('input');
+const $game = $('#game');
+const $results = $('#results');
+const $button = $('#reload-button');
 
-const INITAL_TIME = 30;
+const $wpm = $results.querySelector('#results-wpm');
+const $accuracy = $results.querySelector('#results-accuracy');
 
-const TEXT =
-  'the quick brown fox jumped over the lazy dog daniel is trying to eat his dog and finally becomes the dog that';
+const INITIAL_TIME = 3;
 
 let words = [];
-let currentTime = INITAL_TIME;
+let currentTime = INITIAL_TIME;
 
 initGame();
 initEvents();
 
 function initGame() {
-  words = TEXT.split(' ').slice(0, 32);
-  currentTime = INITAL_TIME;
+  $game.style.display = 'flex'
+  $results.style.display = 'none'
+  $input.value = ''
+
+  words = INITIAL_WORDS.toSorted(() => Math.random() - 0.5).slice(0, 32);
+  currentTime = INITIAL_TIME;
 
   $time.textContent = currentTime;
 
@@ -52,9 +61,66 @@ function initEvents() {
   });
   $input.addEventListener('keydown', onKeyDown);
   $input.addEventListener('keyup', onKeyUp);
+  $button.addEventListener('click', initGame);
 }
 
-function onKeyDown() {}
+function onKeyDown(event) {
+  const $currentWord = $paragraph.querySelector('word.active');
+  const $currentLetter = $currentWord.querySelector('letter.active');
+
+  const { key } = event;
+  if (key === ' ') {
+    event.preventDefault();
+
+    const $nextWord = $currentWord.nextElementSibling;
+    const $nextLetter = $nextWord.querySelector('letter');
+
+    $currentWord.classList.remove('active', 'marked');
+    $currentLetter.classList.remove('active');
+
+    $nextWord.classList.add('active');
+    $nextLetter.classList.add('active');
+
+    $input.value = '';
+
+    const hasMissedLetters =
+      $currentWord.querySelectorAll('letter:not(.correct)').length > 0;
+
+    const classToAdd = hasMissedLetters ? 'marked' : 'correct';
+    $currentWord.classList.add(classToAdd);
+    return;
+  }
+
+  if (key === 'Backspace') {
+    const $prevWord = $currentWord.previousElementSibling;
+    const $prevLetter = $currentLetter.previousElementSibling;
+
+    if (!$prevWord && !$prevLetter) {
+      event.preventDefault();
+      return;
+    }
+
+    const $wordMarked = $paragraph.querySelector('word.marked');
+    if ($wordMarked && !$prevLetter) {
+      event.preventDefault();
+      $prevWord.classList.remove('marked');
+      $prevWord.classList.add('active');
+
+      const $letterToGo = $prevWord.querySelector('letter:last-child');
+
+      $currentLetter.classList.remove('active');
+      $letterToGo.classList.add('active');
+
+      $input.value = [
+        ...$prevWord.querySelectorAll('letter.correct, letter.incorrect'),
+      ]
+        .map(($el) => {
+          return $el.classList.contains('correct') ? $el.innerText : '*';
+        })
+        .join('');
+    }
+  }
+}
 
 function onKeyUp() {
   // recuperar los elementos actuales
@@ -87,8 +153,24 @@ function onKeyUp() {
     $allLetters[inputLength].classList.add('active');
   } else {
     $currentLetter.classList.add('active', 'is-last');
-    // TODO: gameover 
+    // TODO: gameover
   }
 }
 
-function gameOver() {}
+function gameOver() {
+  $game.style.display = 'none';
+  $results.style.display = 'flex';
+
+  const correctWords = $paragraph.querySelectorAll('word.correct').length;
+  const correctLetter = $paragraph.querySelectorAll('letter.correct').length;
+  const incorrectLetter =
+    $paragraph.querySelectorAll('letter.incorrect').length;
+
+  const totalLetters = correctLetter + incorrectLetter;
+
+  const accuracy = totalLetters > 0 ? (correctLetter / totalLetters) * 100 : 0;
+
+  const wpm = (correctWords * 60) / INITIAL_TIME;
+  $wpm.textContent = wpm;
+  $accuracy.textContent = `${accuracy.toFixed(2)}%`;
+}
