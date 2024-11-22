@@ -12,7 +12,7 @@ const $button = $('#reload-button');
 const $wpm = $results.querySelector('#results-wpm');
 const $accuracy = $results.querySelector('#results-accuracy');
 
-const INITIAL_TIME = 3;
+const INITIAL_TIME = 30;
 
 let words = [];
 let currentTime = INITIAL_TIME;
